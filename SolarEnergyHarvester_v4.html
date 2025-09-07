@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Energy Harvester - Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: #2c3e50;
+            text-align: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background elements */
+        .sun {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #FFD700, #FF8C00);
+            border-radius: 50%;
+            box-shadow: 0 0 50px #FFD700;
+            z-index: 0;
+        }
+
+        .cloud {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            z-index: 0;
+        }
+
+        .cloud-1 {
+            top: 50px;
+            left: 10%;
+            width: 70px;
+            height: 40px;
+        }
+
+        .cloud-2 {
+            top: 100px;
+            left: 70%;
+            width: 100px;
+            height: 50px;
+        }
+
+        .cloud-3 {
+            top: 180px;
+            left: 30%;
+            width: 80px;
+            height: 45px;
+        }
+
+        .mountain {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 300px solid transparent;
+            border-right: 300px solid transparent;
+            border-bottom: 150px solid #4CAF50;
+            z-index: 0;
+        }
+
+        .mountain-2 {
+            left: auto;
+            right: 0;
+            border-left: 250px solid transparent;
+            border-right: 250px solid transparent;
+            border-bottom: 120px solid #388E3C;
+        }
+
+        .tree {
+            position: fixed;
+            bottom: 0;
+            background: #388E3C;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            z-index: 1;
+        }
+
+        .tree-1 {
+            left: 20%;
+            width: 40px;
+            height: 60px;
+        }
+
+        .tree-2 {
+            left: 35%;
+            width: 35px;
+            height: 55px;
+        }
+
+        .tree-3 {
+            right: 25%;
+            width: 45px;
+            height: 65px;
+        }
+
+        .tree-4 {
+            right: 15%;
+            width: 30px;
+            height: 50px;
+        }
+
+        .game-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 800px;
+            min-height: 700px;
+            z-index: 2;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #FF8C00;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 2.5rem;
+        }
+
+        .panel-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+            border-radius: 15px;
+            margin: 25px 0;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+            border: 2px solid #BDBDBD;
+        }
+
+        .solar-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 50px;
+            background: linear-gradient(to bottom, #455A64, #37474F);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 4px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: left 0.2s ease-out;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        .panel-cell {
+            width: 16px;
+            height: 32px;
+            background-color: #1a1a1a;
+            border: 2px solid #546E7A;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .light {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            opacity: 0.9;
+            box-shadow: 0 0 12px currentColor;
+            z-index: 1;
+            will-change: transform;
+        }
+
+        .blue-light {
+            background-color: #3498db;
+        }
+
+        .red-light {
+            background-color: #e74c3c;
+        }
+
+        .ir-light {
+            background-color: #8b008b;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            font-size: 18px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: linear-gradient(to bottom, #E1F5FE, #B3E5FC);
+            padding: 12px 18px;
+            border-radius: 10px;
+            min-width: 140px;
+            margin: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #81D4FA;
+            font-size: 1.1rem;
+        }
+
+        .level-target {
+            font-weight: bold;
+            color: #FF8C00;
+        }
+
+        .controls {
+            margin: 25px 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(to bottom, #FF8C00, #FF5722);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 8px 12px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .keyboard-hint {
+            margin-top: 15px;
+            font-style: italic;
+            color: #FF8C00;
+            font-size: 1rem;
+        }
+
+        .grid-container {
+            background: linear-gradient(to bottom, #E8F5E9, #C8E6C9);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #66BB6A;
+        }
+
+        .grid-progress {
+            height: 35px;
+            background-color: #E0E0E0;
+            border-radius: 15px;
+            margin: 15px 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .grid-fill {
+            height: 100%;
+            background: linear-gradient(to right, #00C853, #64DD17);
+            width: 0%;
+            transition: width 0.5s;
+            border-radius: 15px;
+        }
+
+        .grid-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: #1B5E20;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+            font-size: 1.1rem;
+        }
+
+        .facilities {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .facility {
+            background: linear-gradient(to bottom, #FFF9C4, #FFEB3B);
+            border-radius: 10px;
+            padding: 12px;
+            margin: 8px;
+            min-width: 140px;
+            transition: all 0.5s;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #FBC02D;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .active {
+            background: linear-gradient(to bottom, #C8E6C9, #4CAF50);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+            color: white;
+        }
+
+        /* Animasi fasilitas */
+        .pump-animation {
+            position: relative;
+        }
+
+        .pump-animation::after {
+            content: "💧";
+            position: absolute;
+            font-size: 20px;
+            animation: pumpWater 2s infinite;
+            opacity: 0;
+        }
+
+        @keyframes pumpWater {
+            0% {
+                bottom: 5px;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                bottom: 30px;
+                opacity: 0;
+            }
+        }
+
+        .school-animation {
+            position: relative;
+        }
+
+        .school-animation::before {
+            content: "🎓";
+            position: absolute;
+            font-size: 18px;
+            animation: schoolGraduate 3s infinite;
+            opacity: 0;
+            left: 10px;
+        }
+
+        @keyframes schoolGraduate {
+            0% {
+                top: -10px;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                top: -30px;
+                opacity: 0;
+            }
+        }
+
+        .hospital-animation {
+            position: relative;
+        }
+
+        .hospital-animation::after {
+            content: "❤️";
+            position: absolute;
+            font-size: 16px;
+            animation: hospitalHeart 2.5s infinite;
+            opacity: 0;
+            right: 10px;
+        }
+
+        @keyframes hospitalHeart {
+            0% {
+                top: -5px;
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                top: -25px;
+                opacity: 0;
+            }
+        }
+
+        .city-animation {
+            position: relative;
+        }
+
+        .city-animation::before {
+            content: "🏠";
+            position: absolute;
+            font-size: 14px;
+            animation: cityLights 2s infinite;
+            opacity: 0;
+            left: 15px;
+        }
+
+        .city-animation::after {
+            content: "🏠";
+            position: absolute;
+            font-size: 14px;
+            animation: cityLights 2s infinite 0.5s;
+            opacity: 0;
+            right: 15px;
+        }
+
+        @keyframes cityLights {
+            0% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .overheat-warning {
+            color: #e74c3c;
+            font-weight: bold;
+            animation: blink 0.8s infinite;
+            margin-top: 15px;
+            height: 25px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 5px;
+            padding: 4px 12px;
+            display: inline-block;
+            font-size: 1.1rem;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .hit-effect {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 70%);
+            pointer-events: none;
+            z-index: 4;
+            animation: expand 0.5s forwards;
+        }
+
+        @keyframes expand {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2.2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(-50%);
+            }
+
+            25% {
+                transform: translateX(-55%);
+            }
+
+            50% {
+                transform: translateX(-45%);
+            }
+
+            75% {
+                transform: translateX(-55%);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .panel-shake {
+            animation: shake 0.3s ease-in-out;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(to bottom, #FFFFFF, #F5F5F5);
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            position: relative;
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal h2 {
+            color: #FF8C00;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .modal p {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(to bottom, #FF8C00, #FF5722);
+            color: white;
+        }
+
+        .modal-btn-secondary {
+            background: linear-gradient(to bottom, #42A5F5, #1976D2);
+            color: white;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+            background: none;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-modal:hover {
+            background-color: #EEE;
+            color: #333;
+        }
+
+        /* Sound controls */
+        .sound-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .sound-btn {
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-size: 1.2rem;
+        }
+
+        .sound-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Performance optimization */
+        .optimized-rendering {
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sun"></div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="mountain"></div>
+    <div class="mountain mountain-2"></div>
+    <div class="tree tree-1"></div>
+    <div class="tree tree-2"></div>
+    <div class="tree tree-3"></div>
+    <div class="tree tree-4"></div>
+
+    <div class="game-container">
+        <div class="sound-controls">
+            <button class="sound-btn" id="sound-toggle">🔊</button>
+        </div>
+
+        <h1>Solar Energy Harvester</h1>
+
+        <div class="panel-container" id="panel">
+            <div class="solar-panel" id="solar-panel">
+                <div class="panel-cell"></div>
+                <div class="panel-cell"></div>
+                <div class="panel-cell"></div>
+                <div class="panel-cell"></div>
+                <div class="panel-cell"></div>
+                <div class="panel-cell"></div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                Energi: <span id="energy">0</span> poin
+            </div>
+            <div class="stat-item">
+                Level: <span id="level">1</span>
+            </div>
+            <div class="stat-item">
+                Target: <span id="target" class="level-target">10</span> poin
+            </div>
+        </div>
+
+        <div class="overheat-warning" id="overheat-warning"></div>
+
+        <div class="controls">
+            <button id="start-btn">Mulai Game</button>
+            <button id="reset-btn">Reset Game</button>
+        </div>
+
+        <div class="keyboard-hint">Gunakan tombol panah kiri/kanan pada keyboard untuk menggerakkan panel surya</div>
+
+        <div class="grid-container">
+            <h3>Grid Listrik</h3>
+            <div class="grid-progress">
+                <div class="grid-fill" id="grid-fill"></div>
+                <div class="grid-label" id="grid-label">0%</div>
+            </div>
+
+            <div class="facilities">
+                <div class="facility" id="pompa">Pompa Air</div>
+                <div class="facility" id="sekolah">Sekolah</div>
+                <div class="facility" id="rumah-sakit">Rumah Sakit</div>
+                <div class="facility" id="kota">Seluruh Kota</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="instruction-modal">
+        <div class="modal-content">
+            <h2>Cara Bermain 🧐</h2>
+            <p>Tugasmu adalah menggerakkan panel surya untuk mengumpulkan cahaya dan menghasilkan energi!</p>
+            <ul>
+                <li><span style="color: #3498db; font-weight: bold;">Cahaya Biru</span>: +5 poin energi ⚡</li>
+                <li><span style="color: #e74c3c; font-weight: bold;">Cahaya Merah</span>: +2 poin energi ⚡</li>
+                <li><span style="color: #8b008b; font-weight: bold;">Cahaya Inframerah (IR)</span>: HINDARI! Menyebabkan overheating! 🥵</li>
+            </ul>
+            <p>Kumpulkan energi hingga mencapai target level untuk menyuplai fasilitas. Hati-hati, tangkap terlalu banyak cahaya IR, dan game akan selesai!</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" id="start-game-btn">Mulai Game</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="levelup-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-levelup">×</button>
+            <h2>Level Berhasil! 🎉</h2>
+            <p id="level-message">Selamat! Anda berhasil menyelesaikan level <span id="current-level">1</span>. Sekarang naik ke level <span id="next-level">2</span>!</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" id="continue-btn">Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="gameover-modal">
+        <div class="modal-content">
+            <h2>Game Over! 😥</h2>
+            <p>Sistem mengalami overheating karena terlalu banyak cahaya inframerah!</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" id="restart-btn">Main Lagi</button>
+                <button class="modal-btn modal-btn-secondary" id="close-gameover">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="complete-modal">
+        <div class="modal-content">
+            <h2>Selamat! 🏆</h2>
+            <p>Anda telah berhasil menyuplai seluruh kota dengan energi surya!</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" id="playagain-btn">Main Lagi</button>
+                <button class="modal-btn modal-btn-secondary" id="close-complete">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const panelContainer = document.getElementById('panel');
+            const solarPanel = document.getElementById('solar-panel');
+            const startBtn = document.getElementById('start-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const energyDisplay = document.getElementById('energy');
+            const levelDisplay = document.getElementById('level');
+            const targetDisplay = document.getElementById('target');
+            const gridFill = document.getElementById('grid-fill');
+            const gridLabel = document.getElementById('grid-label');
+            const overheatWarning = document.getElementById('overheat-warning');
+            const soundToggle = document.getElementById('sound-toggle');
+            const levelMessage = document.getElementById('level-message');
+
+            // Modal elements
+            const instructionModal = document.getElementById('instruction-modal');
+            const startInstructionBtn = document.getElementById('start-game-btn');
+            const levelupModal = document.getElementById('levelup-modal');
+            const gameoverModal = document.getElementById('gameover-modal');
+            const completeModal = document.getElementById('complete-modal');
+            const continueBtn = document.getElementById('continue-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            const playagainBtn = document.getElementById('playagain-btn');
+            const closeLevelup = document.getElementById('close-levelup');
+            const closeGameover = document.getElementById('close-gameover');
+            const closeComplete = document.getElementById('close-complete');
+            const currentLevelSpan = document.getElementById('current-level');
+            const nextLevelSpan = document.getElementById('next-level');
+
+            const facilities = {
+                pompa: document.getElementById('pompa'),
+                sekolah: document.getElementById('sekolah'),
+                rumahSakit: document.getElementById('rumah-sakit'),
+                kota: document.getElementById('kota')
+            };
+
+            // Audio elements
+            const collectSound = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA");
+            const collectSound2 = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA");
+            const irSound = new Audio("data:audio/wav;base64,UklGRh4AAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQwAAAAAAA");
+            const levelUpSound = new Audio("data:audio/wav;base64,UklGRhAAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQgAAAAAAA");
+            const gameOverSound = new Audio("data:audio/wav;base64,UklGRg4AAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA");
+
+            // Generate simple sound effects using base64 data
+            function generateSound(frequency, duration, type) {
+                const sampleRate = 44100;
+                const channels = 1;
+                const amplitude = 0.5;
+
+                const length = sampleRate * duration / 1000;
+                const buffer = new ArrayBuffer(44 + length * 2);
+                const view = new DataView(buffer);
+
+                // Write WAV header
+                function writeString(view, offset, string) {
+                    for (let i = 0; i < string.length; i++) {
+                        view.setUint8(offset + i, string.charCodeAt(i));
+                    }
+                }
+
+                writeString(view, 0, 'RIFF');
+                view.setUint32(4, 32 + length * 2, true);
+                writeString(view, 8, 'WAVE');
+                writeString(view, 12, 'fmt ');
+                view.setUint32(16, 16, true);
+                view.setUint16(20, 1, true);
+                view.setUint16(22, channels, true);
+                view.setUint32(24, sampleRate, true);
+                view.setUint32(28, sampleRate * 2, true);
+                view.setUint16(32, 2, true);
+                view.setUint16(34, 16, true);
+                writeString(view, 36, 'data');
+                view.setUint32(40, length * 2, true);
+
+                // Write PCM data
+                let angle = 0;
+                for (let i = 0; i < length; i++) {
+                    let sample = 0;
+                    if (type === 'sine') {
+                        sample = amplitude * Math.sin(angle);
+                    } else if (type === 'square') {
+                        sample = amplitude * (Math.sin(angle) >= 0 ? 1 : -1);
+                    }
+
+                    angle += 2 * Math.PI * frequency / sampleRate;
+
+                    // Apply simple envelope
+                    const envelope = i < length * 0.1 ? i / (length * 0.1) :
+                        i > length * 0.8 ? 1 - (i - length * 0.8) / (length * 0.2) : 1;
+
+                    sample *= envelope;
+
+                    view.setInt16(44 + i * 2, sample * 0x7FFF, true);
+                }
+
+                return URL.createObjectURL(new Blob([view], {
+                    type: 'audio/wav'
+                }));
+            }
+
+            // Initialize sounds with different frequencies
+            collectSound.src = generateSound(659.25, 150, 'sine'); // E5 for blue light
+            collectSound2.src = generateSound(523.25, 150, 'sine'); // C5 for red light
+            irSound.src = generateSound(196.00, 300, 'square'); // G3 for IR
+            levelUpSound.src = generateSound(1046.50, 500, 'sine'); // C6
+            gameOverSound.src = generateSound(73.42, 800, 'square'); // D2
+
+            let soundEnabled = true;
+
+            soundToggle.addEventListener('click', function() {
+                soundEnabled = !soundEnabled;
+                soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+            });
+
+            let gameState = {
+                energy: 0,
+                level: 1,
+                targets: [10, 25, 50, 100],
+                isPlaying: false,
+                lightInterval: null,
+                overheat: 0,
+                panelPosition: 50, // percentage from left
+                panelSpeed: 1.5, // Reduced movement speed for smoother control
+                lights: [], // Array to track all active lights
+                keys: {} // Track key states for smooth movement
+            };
+
+            // Tampilkan modal instruksi saat halaman dimuat
+            instructionModal.style.display = 'flex';
+
+            // Fungsi untuk memulai game
+            startBtn.addEventListener('click', function() {
+                if (!gameState.isPlaying) {
+                    startGame();
+                } else {
+                    pauseGame();
+                }
+            });
+
+            startInstructionBtn.addEventListener('click', () => {
+                instructionModal.style.display = 'none';
+                startGame();
+            });
+
+            // Fungsi untuk mereset game
+            resetBtn.addEventListener('click', function() {
+                resetGame();
+            });
+
+            function startGame() {
+                gameState.isPlaying = true;
+                startBtn.textContent = 'Jeda Game';
+                // Mulai menghasilkan cahaya
+                gameState.lightInterval = setInterval(createLight, 1500);
+                // Start the game loop for collision detection
+                requestAnimationFrame(gameLoop);
+            }
+
+            function pauseGame() {
+                gameState.isPlaying = false;
+                startBtn.textContent = 'Lanjutkan';
+                clearInterval(gameState.lightInterval);
+            }
+
+            // Kontrol panel surya dengan keyboard - smooth movement
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                    gameState.keys[e.key] = true;
+                    e.preventDefault(); // Prevent scrolling
+                }
+            });
+
+            document.addEventListener('keyup', function(e) {
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                    gameState.keys[e.key] = false;
+                }
+            });
+
+            // Handle smooth movement in game loop
+            function handlePanelMovement() {
+                if (gameState.keys['ArrowLeft']) {
+                    gameState.panelPosition = Math.max(5, gameState.panelPosition - gameState.panelSpeed);
+                }
+                if (gameState.keys['ArrowRight']) {
+                    gameState.panelPosition = Math.min(95, gameState.panelPosition + gameState.panelSpeed);
+                }
+
+                solarPanel.style.left = `${gameState.panelPosition}%`;
+            }
+
+            // Modal event listeners
+            continueBtn.addEventListener('click', () => {
+                levelupModal.style.display = 'none';
+                startGame();
+            });
+            closeLevelup.addEventListener('click', () => levelupModal.style.display = 'none');
+            restartBtn.addEventListener('click', () => {
+                resetGame();
+                gameoverModal.style.display = 'none';
+            });
+            closeGameover.addEventListener('click', () => gameoverModal.style.display = 'none');
+            playagainBtn.addEventListener('click', () => {
+                resetGame();
+                completeModal.style.display = 'none';
+            });
+            closeComplete.addEventListener('click', () => completeModal.style.display = 'none');
+
+            // Fungsi untuk membuat cahaya jatuh
+            function createLight() {
+                if (!gameState.isPlaying) return;
+
+                const light = document.createElement('div');
+                light.classList.add('light', 'optimized-rendering');
+
+                // Tentukan jenis cahaya secara acak
+                const lightType = Math.random();
+                let lightClass, points, isIR;
+
+                // Probabilitas cahaya: 15% biru, 50% merah, 35% IR
+                if (lightType < 0.15) {
+                    lightClass = 'blue-light';
+                    points = 5; // Changed from 2 to 5
+                    isIR = false;
+                } else if (lightType < 0.65) {
+                    lightClass = 'red-light';
+                    points = 2; // Changed from 1 to 2
+                    isIR = false;
+                } else {
+                    lightClass = 'ir-light';
+                    points = 0;
+                    isIR = true;
+                }
+
+                light.classList.add(lightClass);
+
+                // Posisi horizontal acak
+                const startX = Math.random() * (panelContainer.offsetWidth - 30);
+                light.style.left = `${startX}px`;
+                light.style.top = '0px';
+
+                // Simpan informasi cahaya
+                const lightObj = {
+                    element: light,
+                    x: startX,
+                    y: 0,
+                    speed: 1 + (gameState.level * 0.5) + Math.random() * 2, // Kecepatan jatuh bertambah per level
+                    points: points,
+                    isIR: isIR,
+                    hit: false
+                };
+
+                panelContainer.appendChild(light);
+                gameState.lights.push(lightObj);
+            }
+
+            // Game loop untuk mendeteksi tabrakan
+            function gameLoop() {
+                if (!gameState.isPlaying) return;
+
+                // Handle panel movement
+                handlePanelMovement();
+
+                const panelRect = solarPanel.getBoundingClientRect();
+
+                for (let i = gameState.lights.length - 1; i >= 0; i--) {
+                    const light = gameState.lights[i];
+
+                    // Update posisi cahaya
+                    light.y += light.speed;
+                    light.element.style.top = `${light.y}px`;
+
+                    // Dapatkan posisi cahaya
+                    const lightRect = light.element.getBoundingClientRect();
+
+                    // Deteksi tabrakan dengan panel
+                    if (!light.hit &&
+                        lightRect.bottom >= panelRect.top &&
+                        lightRect.top <= panelRect.bottom &&
+                        lightRect.right >= panelRect.left &&
+                        lightRect.left <= panelRect.right) {
+
+                        // Tabrakan terdeteksi
+                        light.hit = true;
+
+                        if (light.isIR) {
+                            // Cahaya IR menyebabkan overheating
+                            gameState.overheat += 15;
+                            solarPanel.classList.add('panel-shake');
+                            setTimeout(() => solarPanel.classList.remove('panel-shake'), 300);
+                            if (soundEnabled) {
+                                irSound.currentTime = 0;
+                                irSound.play().catch(e => console.log("Audio play failed:", e));
+                            }
+                            if (gameState.overheat >= 100) {
+                                showGameOver();
+                                return;
+                            }
+                            updateOverheatWarning();
+                        } else {
+                            // Tambahkan energi untuk cahaya biru dan merah
+                            gameState.energy += light.points;
+                            energyDisplay.textContent = gameState.energy;
+                            if (soundEnabled) {
+                                // Play different sound for blue and red lights
+                                if (light.points === 5) {
+                                    collectSound.currentTime = 0;
+                                    collectSound.play().catch(e => console.log("Audio play failed:", e));
+                                } else {
+                                    collectSound2.currentTime = 0;
+                                    collectSound2.play().catch(e => console.log("Audio play failed:", e));
+                                }
+                            }
+                        }
+
+                        // Efek visual saat menangkap cahaya
+                        createHitEffect(light.element);
+                        // Hapus cahaya yang sudah ditangkap
+                        light.element.remove();
+                        gameState.lights.splice(i, 1);
+                    }
+
+                    // Hapus cahaya yang melewati panel
+                    if (light.y > panelContainer.offsetHeight) {
+                        light.element.remove();
+                        gameState.lights.splice(i, 1);
+                    }
+                }
+
+                // Cek kondisi level
+                const targetEnergy = gameState.targets[gameState.level - 1];
+                if (gameState.energy >= targetEnergy) {
+                    levelUp();
+                }
+
+                // Perbarui progress bar grid
+                const gridProgress = (gameState.energy / targetEnergy) * 100;
+                gridFill.style.width = `${gridProgress}%`;
+                gridLabel.textContent = `${Math.min(100, Math.round(gridProgress))}%`;
+
+                // Update UI and check for game over
+                if (gameState.overheat >= 100) {
+                    showGameOver();
+                }
+
+                // Call the next frame
+                requestAnimationFrame(gameLoop);
+            }
+
+            function levelUp() {
+                pauseGame();
+                if (soundEnabled) {
+                    levelUpSound.currentTime = 0;
+                    levelUpSound.play().catch(e => console.log("Audio play failed:", e));
+                }
+                
+                // Update level message based on current level
+                let message = "";
+                if (gameState.level === 1) {
+                    message = "Pompa Air berhasil dinyalakan! Anda naik ke peringkat Sekolah!";
+                } else if (gameState.level === 2) {
+                    message = "Sekolah berhasil disuplai energi! Anda naik ke peringkat Rumah Sakit!";
+                } else if (gameState.level === 3) {
+                    message = "Rumah Sakit berhasil disuplai energi! Anda naik ke peringkat Seluruh Kota!";
+                } else {
+                    message = "Selamat! Anda berhasil menyelesaikan level " + gameState.level + "!";
+                }
+                
+                levelMessage.textContent = message;
+                
+                const levelToAdvance = gameState.level + 1;
+                currentLevelSpan.textContent = gameState.level;
+                nextLevelSpan.textContent = levelToAdvance;
+                levelupModal.style.display = 'flex';
+                updateFacilities();
+
+                gameState.level++;
+                gameState.energy = 0;
+                energyDisplay.textContent = gameState.energy;
+                levelDisplay.textContent = gameState.level;
+                if (gameState.targets[gameState.level - 1]) {
+                    targetDisplay.textContent = gameState.targets[gameState.level - 1];
+                } else {
+                    showGameComplete();
+                }
+                resetLights();
+            }
+
+            function showGameOver() {
+                pauseGame();
+                if (soundEnabled) {
+                    gameOverSound.currentTime = 0;
+                    gameOverSound.play().catch(e => console.log("Audio play failed:", e));
+                }
+                gameoverModal.style.display = 'flex';
+            }
+
+            function showGameComplete() {
+                pauseGame();
+                completeModal.style.display = 'flex';
+            }
+
+            function resetGame() {
+                pauseGame();
+                gameState.energy = 0;
+                gameState.level = 1;
+                gameState.overheat = 0;
+                gameState.panelPosition = 50;
+                energyDisplay.textContent = '0';
+                levelDisplay.textContent = '1';
+                targetDisplay.textContent = gameState.targets[0];
+                gridFill.style.width = '0%';
+                gridLabel.textContent = '0%';
+                overheatWarning.textContent = '';
+                solarPanel.style.left = '50%';
+                resetLights();
+                for (const key in facilities) {
+                    facilities[key].classList.remove('active');
+                    facilities[key].classList.remove('pump-animation');
+                    facilities[key].classList.remove('school-animation');
+                    facilities[key].classList.remove('hospital-animation');
+                    facilities[key].classList.remove('city-animation');
+                }
+                startBtn.textContent = 'Mulai Game';
+            }
+
+            function resetLights() {
+                gameState.lights.forEach(light => light.element.remove());
+                gameState.lights = [];
+            }
+
+            function updateOverheatWarning() {
+                const overheatText = `Overheat: ${gameState.overheat}%`;
+                overheatWarning.textContent = overheatText;
+            }
+
+            function updateFacilities() {
+                const currentLevel = gameState.level;
+                let facilityToActivate;
+                if (currentLevel === 1) {
+                    facilityToActivate = facilities.pompa;
+                    facilityToActivate.classList.add('pump-animation');
+                } else if (currentLevel === 2) {
+                    facilityToActivate = facilities.sekolah;
+                    facilityToActivate.classList.add('school-animation');
+                } else if (currentLevel === 3) {
+                    facilityToActivate = facilities.rumahSakit;
+                    facilityToActivate.classList.add('hospital-animation');
+                } else if (currentLevel === 4) {
+                    facilityToActivate = facilities.kota;
+                    facilityToActivate.classList.add('city-animation');
+                }
+                if (facilityToActivate) {
+                    facilityToActivate.classList.add('active');
+                }
+            }
+
+            function createHitEffect(lightElement) {
+                const effect = document.createElement('div');
+                effect.classList.add('hit-effect');
+                effect.style.left = `${lightElement.offsetLeft + lightElement.offsetWidth / 2}px`;
+                effect.style.top = `${lightElement.offsetTop + lightElement.offsetHeight / 2}px`;
+                panelContainer.appendChild(effect);
+                setTimeout(() => effect.remove(), 500);
+            }
+
+            // Initial setup
+            updateOverheatWarning();
+        });
+    </script>
+</body>
+</html>
